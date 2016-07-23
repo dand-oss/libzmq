@@ -3,6 +3,13 @@
 cmake_minimum_required (VERSION 2.8.12)
 project (ZeroMQ)
 
+###############
+# ASI default settings
+list(APPEND CMAKE_MODULE_PATH "$ENV{ASI}/cmake/Modules")
+include(asv_cmake_defaults)
+asv_cmake_defaults( )
+###############
+
 list (INSERT CMAKE_MODULE_PATH 0 "${CMAKE_SOURCE_DIR}")
 
 include(CheckCXXCompilerFlag)
@@ -722,6 +729,7 @@ endif ()
 
 if (MSVC)
   add_library (libzmq SHARED ${sources} ${public_headers} ${html-docs} ${readme-docs} ${CMAKE_CURRENT_BINARY_DIR}/NSIS.template.in)
+  install_static_pdb(libzmq) # ASV
   target_link_libraries (libzmq ${OPTIONAL_LIBRARIES})
   set_target_properties (libzmq PROPERTIES
     PUBLIC_HEADER "${public_headers}"
