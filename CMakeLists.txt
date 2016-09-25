@@ -75,7 +75,7 @@ endif ()
 set(SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 
 if (EXISTS "${SOURCE_DIR}/.git")
-    OPTION (ENABLE_DRAFTS "Build and install draft classes and methods" ON)
+    OPTION (ENABLE_DRAFTS "Build and install draft classes and methods" OFF)
 else ()
     OPTION (ENABLE_DRAFTS "Build and install draft classes and methods" OFF)
 endif ()
