@@ -360,7 +360,7 @@ set (CMAKE_PYTHON_VERSION 2.7 2.6 2.5 2.4)
 find_package (PythonInterp)
 find_package (AsciiDoc)
 
-cmake_dependent_option (WITH_DOC "Build Reference Guide documentation (requires DocBook)" ON
+cmake_dependent_option (WITH_DOC "Build Reference Guide documentation (requires DocBook)" OFF
                        "PYTHONINTERP_FOUND;ASCIIDOC_FOUND" OFF)
 
 if (MSVC)
@@ -394,15 +394,15 @@ if (MSVC)
 else ()
   if (WITH_OPENPGM)
     #  message (FATAL_ERROR "WITH_OPENPGM not implemented")
-    
+
     if (NOT OPENPGM_PKGCONFIG_NAME)
       SET (OPENPGM_PKGCONFIG_NAME "openpgm-5.2")
     endif(NOT OPENPGM_PKGCONFIG_NAME)
-    
-    SET (OPENPGM_PKGCONFIG_NAME ${OPENPGM_PKGCONFIG_NAME} CACHE STRING 
+
+    SET (OPENPGM_PKGCONFIG_NAME ${OPENPGM_PKGCONFIG_NAME} CACHE STRING
       "Name pkg-config shall use to find openpgm libraries and include paths"
       FORCE )
-    
+
     find_package(PkgConfig)
     pkg_check_modules (OPENPGM  ${OPENPGM_PKGCONFIG_NAME})
 
@@ -417,7 +417,7 @@ else ()
     if (HAVE_FLAG_VISIBILITY_HIDDEN)
 
     elseif (HAVE_FLAG_LDSCOPE_HIDDEN)
-    
+
     endif ()
   endif ()
 endif ()
@@ -931,8 +931,10 @@ if (MSVC)
   string(TOUPPER "${CMAKE_BUILD_TYPE}" U_CMAKE_BUILD_TYPE)
   get_property(libzmq_pf TARGET libzmq PROPERTY ${U_CMAKE_BUILD_TYPE}_POSTFIX)
   set(libzmq_file libzmq${libzmq_pf}${CMAKE_LINK_LIBRARY_SUFFIX})
-  get_property(libzmq_static_pf TARGET libzmq-static PROPERTY ${U_CMAKE_BUILD_TYPE}_POSTFIX)
-  set(libzmq_static_file libzmq-static${libzmq_static_pf}${CMAKE_LINK_LIBRARY_SUFFIX})
+  if (BUILD_STATIC)
+    get_property(libzmq_static_pf TARGET libzmq-static PROPERTY ${U_CMAKE_BUILD_TYPE}_POSTFIX)
+    set(libzmq_static_file libzmq-static${libzmq_static_pf}${CMAKE_LINK_LIBRARY_SUFFIX})
+  endif()
 else()
   set(libzmq_file libzmq${CMAKE_SHARED_LIBRARY_SUFFIX})
   set(libzmq_static_file libzmq-static${CMAKE_STATIC_LIBRARY_SUFFIX})
