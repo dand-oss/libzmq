@@ -5,7 +5,7 @@ project (ZeroMQ)
 
 ###############
 # ASI default settings
-list(APPEND CMAKE_MODULE_PATH "$ENV{ASI}/cmake/Modules")
+list(APPEND CMAKE_MODULE_PATH "$ENV{ASI_CMAKE}")
 include(asv_cmake_defaults)
 asv_cmake_defaults( )
 ###############
