@@ -2,6 +2,17 @@
 
 cmake_minimum_required (VERSION 2.8.12)
 project (ZeroMQ)
+ 
+###############
+# ASI default settings
+list(APPEND CMAKE_MODULE_PATH "$ENV{ASV_CMAKE}")
+include(asv_cmake_defaults)
+asv_cmake_defaults( )
+###############
+
+set (BLOW_OFF_PRECOMP TRUE) # ASV - this isn't working
+set (BUILD_STATIC, FALSE) # ASV - not needed
+set (BUILD_TESTS OFF) # why bother
 
 list (INSERT CMAKE_MODULE_PATH 0 "${CMAKE_CURRENT_SOURCE_DIR}")
 set (ZMQ_CMAKE_MODULES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/builds/cmake/Modules)
@@ -90,7 +101,7 @@ endif ()
 set(SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 
 if (EXISTS "${SOURCE_DIR}/.git")
-    OPTION (ENABLE_DRAFTS "Build and install draft classes and methods" ON)
+    OPTION (ENABLE_DRAFTS "Build and install draft classes and methods" OFF)
 else ()
     OPTION (ENABLE_DRAFTS "Build and install draft classes and methods" OFF)
 endif ()
@@ -461,7 +472,7 @@ set (CMAKE_PYTHON_VERSION 2.7 2.6 2.5 2.4)
 find_package (PythonInterp)
 find_package (AsciiDoc)
 
-cmake_dependent_option (WITH_DOC "Build Reference Guide documentation (requires DocBook)" ON
+cmake_dependent_option (WITH_DOC "Build Reference Guide documentation (requires DocBook)" OFF
                        "PYTHONINTERP_FOUND;ASCIIDOC_FOUND" OFF)
 
 if (MSVC)
@@ -490,7 +501,7 @@ if (MSVC)
     set (OPENPGM_LIBRARY_DIRS ${OPENPGM_ROOT}/lib)
     set (OPENPGM_LIBRARIES
       optimized libpgm${MSVC_TOOLSET}-mt-${OPENPGM_VERSION_MAJOR}_${OPENPGM_VERSION_MINOR}_${OPENPGM_VERSION_MICRO}.lib
-      debug libpgm${MSVC_TOOLSET}-mt-gd-${OPENPGM_VERSION_MAJOR}_${OPENPGM_VERSION_MINOR}_${OPENPGM_VERSION_MICRO}.lib)
+      debug libpgm${MSVC_TOOLSET}-mt-${OPENPGM_VERSION_MAJOR}_${OPENPGM_VERSION_MINOR}_${OPENPGM_VERSION_MICRO}.lib) # ASV
   endif ()
 else ()
   if (WITH_OPENPGM)
@@ -942,7 +953,7 @@ if (ZMQ_BUILD_FRAMEWORK)
     COMMENT "Perf tools")
 endif ()
 
-if (MSVC)
+if (MSVC AND NOT ${BLOW_OFF_PRECOMP}) # ASV
     # default for all sources is to use precompiled headers
     foreach(source ${sources})    
         # C and C++ can not use the same precompiled header
@@ -1000,7 +1011,7 @@ if (MSVC)
       RELEASE_POSTFIX "${MSVC_TOOLSET}-mt-${ZMQ_VERSION_MAJOR}_${ZMQ_VERSION_MINOR}_${ZMQ_VERSION_PATCH}"
       RELWITHDEBINFO_POSTFIX "${MSVC_TOOLSET}-mt-${ZMQ_VERSION_MAJOR}_${ZMQ_VERSION_MINOR}_${ZMQ_VERSION_PATCH}"
       MINSIZEREL_POSTFIX "${MSVC_TOOLSET}-mt-${ZMQ_VERSION_MAJOR}_${ZMQ_VERSION_MINOR}_${ZMQ_VERSION_PATCH}"
-      DEBUG_POSTFIX "${MSVC_TOOLSET}-mt-gd-${ZMQ_VERSION_MAJOR}_${ZMQ_VERSION_MINOR}_${ZMQ_VERSION_PATCH}"
+      DEBUG_POSTFIX "${MSVC_TOOLSET}-mt-${ZMQ_VERSION_MAJOR}_${ZMQ_VERSION_MINOR}_${ZMQ_VERSION_PATCH}${CMAKE_DEBUG_POSTFIX}" # ASV
       RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin"
       COMPILE_DEFINITIONS "DLL_EXPORT"
       OUTPUT_NAME "libzmq")
